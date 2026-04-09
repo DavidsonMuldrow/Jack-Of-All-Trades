@@ -23,23 +23,19 @@ public class PlayerMovement : MonoBehaviour
 
     private void Move(float acceleration, float deceleration, Vector2 moveInput)
     {
-        if (moveInput != Vector2.zero)
+        float targetXVelocity = moveInput.x * MoveStats.MoveSpeed;
+
+        float chosenRate = (moveInput.x != 0) ? acceleration : deceleration;
+
+        _moveVelocity.x = Mathf.MoveTowards(_moveVelocity.x, targetXVelocity, chosenRate * Time.fixedDeltaTime);
+
+        rb.linearVelocity = new Vector2(_moveVelocity.x, rb.linearVelocity.y);
+
+        if (moveInput.x != 0)
         {
             TurnCheck(moveInput);
-            Vector2 targetVelocity = Vector2.zero;
-            targetVelocity = new Vector2(moveInput.x, 0f) * MoveStats.MoveSpeed;
-
-            _moveVelocity = Vector2.Lerp(_moveVelocity, targetVelocity, acceleration * Time.fixedDeltaTime);
-            rb.linearVelocity = new Vector2(_moveVelocity.x, rb.linearVelocity.y);
-        }
-
-        else if (moveInput == Vector2.zero)
-        {
-            _moveVelocity = Vector2.Lerp(_moveVelocity, Vector2.zero, deceleration * Time.fixedDeltaTime);
-            rb.linearVelocity = new Vector2(_moveVelocity.x, rb.linearVelocity.y);
         }
     }
-
     private void TurnCheck(Vector2 moveInput)
     {
         if (_isFacingRight && moveInput.x < 0)
@@ -87,5 +83,20 @@ public class PlayerMovement : MonoBehaviour
     private void CollisionChecks()
     {
         IsGrounded();
+    }
+
+    private void Update()
+    {
+        CollisionChecks();
+    }
+
+    private void FixedUpdate()
+    {
+        Vector2 input = InputManager.Movement;
+
+        float accel = _isGrounded ? MoveStats.GroundAcceleration : MoveStats.AirAcceleration;
+        float decel = _isGrounded ? MoveStats.GroundDeceleration : MoveStats.AirDeceleration;
+
+        Move(accel, decel, input);
     }
 }

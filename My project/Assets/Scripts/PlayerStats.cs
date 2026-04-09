@@ -2,9 +2,10 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-[CreateAssetMenu(menuName = "Player Movement")]
-public class PlayerStats : MonoBehaviour
+[CreateAssetMenu(menuName = "Player Movement/Player Stats")]
+public class PlayerStats : ScriptableObject
 {
+
     [Header("Move")]
     [Range(1f, 100f)] public float MoveSpeed = 13f;
     [Range(0.25f, 50f)] public float GroundAcceleration = 5f;

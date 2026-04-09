@@ -21,20 +21,41 @@ public class InputManager : MonoBehaviour
     {
         PlayerInput = GetComponent<PlayerInput>();
 
-        _moveAction = PlayerInput.actions["Move"];
-        _jumpAction = PlayerInput.actions["Jump"];
-        _runAction = PlayerInput.actions["Run"];
-    }
+        if (PlayerInput != null)
+        {
+            _moveAction = PlayerInput.actions["Move"];
+            _jumpAction = PlayerInput.actions["Jump"];
+            _runAction = PlayerInput.actions["Run"];
 
+            if (_moveAction == null) Debug.LogWarning("InputManager: 'Move' action not found!");
+            if (_jumpAction == null) Debug.LogWarning("InputManager: 'Jump' action not found!");
+            if (_runAction == null) Debug.LogWarning("InputManager: 'Run' action not found!");
+        }
+        else
+        {
+            Debug.LogError("InputManager: PlayerInput component missing from this GameObject!");
+        }
+    }
 
     private void Update()
     {
-        Movement = _moveAction.ReadValue<Vector2>();
+        if (_moveAction != null)
+        {
+            Movement = _moveAction.ReadValue<Vector2>();
 
-        JumpWasPressed = _moveAction.WasPressedThisFrame();
-        JumpIsHeld = _jumpAction.IsPressed();
-        JumpWasReleased = _jumpAction.WasReleasedThisFrame();
+            if (Movement != Vector2.zero) Debug.Log("Movement detected: " + Movement);
+        }
 
-        RunIsHeld = _runAction.IsPressed();
+        if (_jumpAction != null)
+        {
+            JumpWasPressed = _jumpAction.WasPressedThisFrame();
+            JumpIsHeld = _jumpAction.IsPressed();
+            JumpWasReleased = _jumpAction.WasReleasedThisFrame();
+        }
+
+        if (_runAction != null)
+        {
+            RunIsHeld = _runAction.IsPressed();
+        }
     }
 }
