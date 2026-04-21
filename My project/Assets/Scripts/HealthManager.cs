@@ -4,13 +4,13 @@ using UnityEngine.UI;
 public class HealthManager : MonoBehaviour
 {
     public Image healthBar;
-    public float healthAmount = 100f;
+
+    private float healthAmount = 100f;
 
     void Start()
     {
         healthBar.type = Image.Type.Filled;
         healthBar.fillMethod = Image.FillMethod.Horizontal;
-
     }
 
 
@@ -23,7 +23,6 @@ public class HealthManager : MonoBehaviour
     {
         healthAmount -= damage;
         healthBar.fillAmount = healthAmount / 100f;
-        Debug.Log("Damaged");
     }
 
     public void Heal(float healingAmount)
