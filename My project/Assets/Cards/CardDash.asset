@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ccdd467dd1f59e4c99d0b3679026411, type: 3}
+  m_Name: CardDash
+  m_EditorClassIdentifier: Assembly-CSharp::CardData
+  CardName: Rocket Boots
+  Description: 'You found a rusted and dirt covered pair of boots with thrusters
+    on the bottom. These are probably safe. You can now dash. (Left-Shift) '
+  Effect: {fileID: 11400000, guid: e5217c0fda6c02245bc841bc0943532e, type: 2}
