@@ -3,9 +3,17 @@ using UnityEngine.InputSystem;
 
 public class Weapons : MonoBehaviour
 {
-    public void WeaponAction()
+    public virtual void WeaponAction()
     {
         Debug.Log("Weapon Action");
+    }
+
+    private void FixedUpdate()
+    {
+        if (InputManager.Clicked)
+        {
+            WeaponAction();
+        }
     }
 
     public void GetLeftClickInput(InputAction.CallbackContext context)

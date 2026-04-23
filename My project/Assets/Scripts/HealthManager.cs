@@ -102,4 +102,9 @@ public class HealthManager : MonoBehaviour
         Time.timeScale = 1f;
         SceneManager.LoadScene("JackofAllTrades");
     }
+
+    public void BackToStart()
+    {
+        SceneManager.LoadScene("TitleScene");
+    }
 }

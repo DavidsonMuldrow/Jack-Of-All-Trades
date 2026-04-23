@@ -10,9 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3ccdd467dd1f59e4c99d0b3679026411, type: 3}
-  m_Name: CardEnergy
+  m_Name: CardGun
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  CardName: Energy Drink
-  Description: OH BOY, I SURE DO LOVE ENERGY DRINKS! (+Speed -Time)
-  Effect: {fileID: 11400000, guid: 6e60111e8aa6fd84ebdc85617f38a21d, type: 2}
-  itemsToToggle: []
+  CardName: HandGun
+  Description: Just a gun with infinite ammo, nothing special. (Left-Click)
+  Effect: {fileID: 0}
+  itemsToToggle:
+  - ObjectID: Gun
+    ShouldEnable: 1
+  - ObjectID: Sword
+    ShouldEnable: 0
+  - ObjectID: Gun_Turret
+    ShouldEnable: 1

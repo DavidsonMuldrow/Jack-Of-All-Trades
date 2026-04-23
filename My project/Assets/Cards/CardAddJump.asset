@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CardAddJump
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   CardName: Wings for Boots
-  Description: Your boots have...wings? Well you can jump more than once now. (Stacks)
+  Description: Your boots have...wings? Well you can jump once more now. (Stacks)
   Effect: {fileID: 11400000, guid: 2c232d3ac110f914b945252bca08dc4e, type: 2}
   itemsToToggle:
   - ObjectID: Ground

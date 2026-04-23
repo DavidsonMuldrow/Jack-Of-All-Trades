@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CardEnergy 2
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   CardName: Literal Motor Oil
-  Description: OH BOY, I SURE DO LOVE- Wait what? ( +Speed +Turret -Time)
+  Description: OH BOY, I SURE DO LOVE- Wait what? (+Speed +Turret -Time)
   Effect: {fileID: 11400000, guid: 6e60111e8aa6fd84ebdc85617f38a21d, type: 2}
   itemsToToggle:
   - ObjectID: Turret
