@@ -86,5 +86,9 @@ public class PlayerStats : ScriptableObject
         ApexHangTime = 0.075f;
         JumpBufferTime = 0.125f;
         JumpCoyoteTime = 0.1f;
+
+        CalculateValues();
+
+        Debug.Log("Player Stats have been hard-reset to defaults.");
     }
 }
