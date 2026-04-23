@@ -3,7 +3,17 @@ using UnityEngine.InputSystem;
 
 public class Weapons : MonoBehaviour
 {
-    public void WeaponAction()
+
+    
+    private void FixedUpdate()
+    {
+        if (InputManager.Clicked)
+        {
+            WeaponAction();
+        }
+    }
+
+    public virtual void WeaponAction()
     {
         Debug.Log("Weapon Action");
     }
