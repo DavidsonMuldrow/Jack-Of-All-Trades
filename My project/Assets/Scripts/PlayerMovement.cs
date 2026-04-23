@@ -25,6 +25,13 @@ public class PlayerMovement : MonoBehaviour
     private float _coyoteTimer;
     private float _apexPoint;
 
+    private bool _isOnWall;
+    private bool _isWallSliding;
+    private int _lastWallDir;
+    private int _lastJumpedWallDir;
+    private float _wallJumpUnlockTimer;
+    private float _wallStickTimer;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -44,7 +51,7 @@ public class PlayerMovement : MonoBehaviour
         CountTimers();
         JumpChecks();
 
-        // TEST TOOL: Press T in-game to see if your cards actually changed the asset
+        // TEST TOOL: Press T during game to see if cards actually changed the asset
         if (Input.GetKeyDown(KeyCode.T))
         {
             Debug.Log($"Current Stats -> Speed: {MoveStats.MoveSpeed} | Max Jumps: {MoveStats.NumberOfJumpsAllowed}");
@@ -54,17 +61,44 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         CollisionChecks();
+
+        if (_wallJumpUnlockTimer > 0) _wallJumpUnlockTimer -= Time.fixedDeltaTime;
+
+        bool isPushingAgainstWall = (InputManager.Movement.x > 0 && _lastWallDir == 1) ||
+                                    (InputManager.Movement.x < 0 && _lastWallDir == -1);
+
+        if (isPushingAgainstWall)
+        {
+            _wallStickTimer = 0.25f;
+        }
+        else
+        {
+            _wallStickTimer -= Time.fixedDeltaTime;
+        }
+
+        if (_isOnWall && !_isGrounded && rb.linearVelocity.y < 0 && _wallStickTimer > 0)
+        {
+            _isWallSliding = true;
+        }
+        else
+        {
+            _isWallSliding = false;
+        }
+
         Jump();
 
         if (IsDashing) return;
 
-        if (_isGrounded)
+        if (_wallJumpUnlockTimer <= 0)
         {
-            Move(MoveStats.GroundAcceleration, MoveStats.GroundDeceleration, InputManager.Movement);
-        }
-        else
-        {
-            Move(MoveStats.AirAcceleration, MoveStats.AirDeceleration, InputManager.Movement);
+            if (_isGrounded)
+            {
+                Move(MoveStats.GroundAcceleration, MoveStats.GroundDeceleration, InputManager.Movement);
+            }
+            else
+            {
+                Move(MoveStats.AirAcceleration, MoveStats.AirDeceleration, InputManager.Movement);
+            }
         }
     }
 
@@ -82,7 +116,11 @@ public class PlayerMovement : MonoBehaviour
 
         if (_jumpBufferTimer > 0f)
         {
-            if (_isGrounded || _coyoteTimer > 0f)
+            if (_jumpBufferTimer > 0f && _isWallSliding && _lastWallDir != _lastJumpedWallDir)
+            {
+                InitiateWallJump();
+            }
+            else if (_isGrounded || _coyoteTimer > 0f)
             {
                 InitiateJump(1);
             }
@@ -95,12 +133,17 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        if (_isGrounded && VerticalVelocity <= 0f)
+        if (_isGrounded)
         {
-            _isJumping = false;
-            _isFalling = false;
-            _isFastFalling = false;
-            _numberOfJumpsUsed = 0;
+            _lastJumpedWallDir = 0;
+
+            if (VerticalVelocity <= 0.1f)
+            {
+                _isJumping = false;
+                _isFalling = false;
+                _isFastFalling = false;
+                _numberOfJumpsUsed = 0;
+            }
         }
     }
 
@@ -114,8 +157,32 @@ public class PlayerMovement : MonoBehaviour
         VerticalVelocity = MoveStats.InitialJumpVelocity;
     }
 
+    private void InitiateWallJump()
+    {
+        _isJumping = true;
+        _isWallSliding = false;
+        _jumpBufferTimer = 0f;
+        _isFastFalling = false;
+        _lastJumpedWallDir = _lastWallDir;
+
+        _wallJumpUnlockTimer = 0.2f;
+
+        Vector2 jumpDir = new Vector2(-_lastWallDir * MoveStats.WallJumpForce.x, MoveStats.WallJumpForce.y);
+
+        rb.linearVelocity = jumpDir;
+        VerticalVelocity = jumpDir.y;
+        _moveVelocity.x = jumpDir.x;
+    }
+
     private void Jump()
     {
+        if (_isWallSliding)
+        {
+            VerticalVelocity = Mathf.MoveTowards(rb.linearVelocity.y, -MoveStats.WallSlideSpeed, 50f * Time.fixedDeltaTime);
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, VerticalVelocity);
+            return;
+        }
+
         if (_isJumping)
         {
             if (_bumpedHead)
@@ -200,9 +267,50 @@ public class PlayerMovement : MonoBehaviour
         Vector2 groundSize = new Vector2(collision.bounds.size.x, MoveStats.GroundDetectionRayLength);
         _isGrounded = Physics2D.BoxCast(groundOrigin, groundSize, 0f, Vector2.down, MoveStats.GroundDetectionRayLength, MoveStats.GroundLayer);
 
-        // Head Detection
         Vector2 headOrigin = new Vector2(collision.bounds.center.x, collision.bounds.max.y);
         Vector2 headSize = new Vector2(collision.bounds.size.x * MoveStats.HeadWidth, MoveStats.HeadDetectionRayLength);
         _bumpedHead = Physics2D.BoxCast(headOrigin, headSize, 0f, Vector2.up, MoveStats.HeadDetectionRayLength, MoveStats.GroundLayer);
+
+        float wallCheckDist = 0.2f;
+        float playerWidth = collision.bounds.extents.x;
+        Vector2 wallSize = new Vector2(0.1f, collision.bounds.size.y * 0.9f);
+
+        Vector2 rightSideOffset = (Vector2)collision.bounds.center + new Vector2(playerWidth, 0);
+        Vector2 leftSideOffset = (Vector2)collision.bounds.center + new Vector2(-playerWidth, 0);
+
+        RaycastHit2D hitRight = Physics2D.BoxCast(rightSideOffset, wallSize, 0f, Vector2.right, wallCheckDist, MoveStats.GroundLayer);
+        RaycastHit2D hitLeft = Physics2D.BoxCast(leftSideOffset, wallSize, 0f, Vector2.left, wallCheckDist, MoveStats.GroundLayer);
+
+        if (hitRight)
+        {
+            _isOnWall = true;
+            _lastWallDir = 1;
+        }
+        else if (hitLeft)
+        {
+            _isOnWall = true;
+            _lastWallDir = -1;
+        }
+        else
+        {
+            _isOnWall = false;
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (collision == null) return;
+
+        Gizmos.color = _isOnWall ? Color.green : Color.red;
+
+        float wallCheckDist = 0.2f;
+        float playerWidth = collision.bounds.extents.x;
+        Vector2 wallSize = new Vector2(0.1f, collision.bounds.size.y * 0.9f);
+
+        Vector2 rightPos = (Vector2)collision.bounds.center + new Vector2(playerWidth + (wallCheckDist / 2), 0);
+        Vector2 leftPos = (Vector2)collision.bounds.center + new Vector2(-playerWidth - (wallCheckDist / 2), 0);
+
+        Gizmos.DrawWireCube(rightPos, wallSize);
+        Gizmos.DrawWireCube(leftPos, wallSize);
     }
 }

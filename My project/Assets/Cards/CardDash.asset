@@ -16,3 +16,10 @@ MonoBehaviour:
   Description: 'You found a rusted and dirt covered pair of boots with thrusters
     on the bottom. These are probably safe. You can now dash. (Left-Shift) '
   Effect: {fileID: 11400000, guid: e5217c0fda6c02245bc841bc0943532e, type: 2}
+  itemsToToggle:
+  - ObjectID: Spikes
+    ShouldEnable: 1
+  - ObjectID: Pillars
+    ShouldEnable: 1
+  - ObjectID: Tunnel
+    ShouldEnable: 1

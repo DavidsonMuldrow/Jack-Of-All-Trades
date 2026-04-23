@@ -10,17 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3ccdd467dd1f59e4c99d0b3679026411, type: 3}
-  m_Name: CardAddJump
+  m_Name: CardEnergy
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  CardName: Wings for Boots
-  Description: Your boots have...wings? Well you can jump more than once now. (Stacks)
-  Effect: {fileID: 11400000, guid: 2c232d3ac110f914b945252bca08dc4e, type: 2}
-  itemsToToggle:
-  - ObjectID: Ground
-    ShouldEnable: 0
-  - ObjectID: Tunnel
-    ShouldEnable: 1
-  - ObjectID: Pillars
-    ShouldEnable: 1
-  - ObjectID: MiddleGround
-    ShouldEnable: 0
+  CardName: Energy Drink
+  Description: OH BOY, I SURE DO LOVE ENERGY DRINKS! ( +Speed -Time)
+  Effect: {fileID: 11400000, guid: 6e60111e8aa6fd84ebdc85617f38a21d, type: 2}
+  itemsToToggle: []

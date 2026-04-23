@@ -40,6 +40,10 @@ public class PlayerStats : ScriptableObject
     [Header("Jump Coyote Time")]
     [Range(0f, 1f)] public float JumpCoyoteTime = 0.1f;
 
+    [Header("Wall Movement")]
+    public float WallSlideSpeed = 3f;
+    public Vector2 WallJumpForce = new Vector2(30f, 30f);
+    public float WallDetectionDistance = 0.5f;
 
 
     public float Gravity { get; private set; }
