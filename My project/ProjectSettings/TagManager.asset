@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - RemovableObject
+  - Enemy
   layers:
   - Default
   - TransparentFX
