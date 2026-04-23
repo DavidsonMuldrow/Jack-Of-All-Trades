@@ -105,6 +105,19 @@ public class HealthManager : MonoBehaviour
 
     public void BackToStart()
     {
+        LevelModifierManager.RemovedFromPool.Clear();
+        LevelModifierManager.ChosenCards.Clear();
+
+        if (LevelModifierManager.StickyObjectStates != null)
+        {
+            LevelModifierManager.StickyObjectStates.Clear();
+        }
+
+        if (MoveStats != null) MoveStats.ResetToDefaults();
+
+        LevelModifierManager.MaxRunTime = 45f;
+
+        Time.timeScale = 1f;
         SceneManager.LoadScene("TitleScene");
     }
 }
